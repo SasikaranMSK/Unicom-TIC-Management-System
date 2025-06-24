@@ -41,7 +41,7 @@ namespace UnicornTICManagementSystem.Views
             cmbDay.Location = new Point(70, 18);
             cmbDay.Size = new Size(120, 25);
             cmbDay.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbDay.Items.AddRange(new[] { "All Days", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" });
+            cmbDay.Items.AddRange(new string[] { "All Days", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" });
             cmbDay.SelectedIndex = 0;
             cmbDay.SelectedIndexChanged += CmbDay_SelectedIndexChanged;
             this.Controls.Add(cmbDay);
@@ -94,8 +94,8 @@ namespace UnicornTICManagementSystem.Views
         {
             try
             {
-                var timetables = await _timetableController.GetAllTimetablesAsync();
-                dgvTimetable.DataSource = timetables;
+                dgvTimetable.AutoGenerateColumns = true;
+                dgvTimetable.DataSource = await _timetableController.GetAllTimetablesAsync();
 
                 // Hide unnecessary columns
                 if (dgvTimetable.Columns["Id"] != null)
@@ -122,7 +122,20 @@ namespace UnicornTICManagementSystem.Views
             {
                 if (editForm.ShowDialog() == DialogResult.OK)
                 {
-                    var newEntry = editForm.TimetableEntry;
+                    var newEntry = new Models.Timetable
+                    {
+                        CourseId = editForm.TimetableEntry.CourseId,
+                        CourseName = editForm.TimetableEntry.CourseName,
+                        DayOfWeek = editForm.TimetableEntry.DayOfWeek,
+                        StartTime = editForm.TimetableEntry.StartTime,
+                        EndTime = editForm.TimetableEntry.EndTime,
+                        Classroom = editForm.TimetableEntry.Classroom,
+                        TeacherName = editForm.TimetableEntry.TeacherName,
+                        EffectiveDate = editForm.TimetableEntry.EffectiveDate,
+                        EndDate = editForm.TimetableEntry.EndDate,
+                        IsActive = editForm.TimetableEntry.IsActive
+                    };
+
                     bool success = await _timetableController.AddTimetableEntryAsync(newEntry);
                     if (success)
                         LoadTimetable();

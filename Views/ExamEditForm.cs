@@ -11,6 +11,7 @@ namespace UnicornTICManagementSystem.Views
 {
     public partial class ExamEditForm : Form
     {
+   
         private readonly ExamController _examController;
         private readonly CourseController _courseController;
         private readonly Exam _editingExam;
@@ -238,7 +239,22 @@ namespace UnicornTICManagementSystem.Views
             try
             {
                 // Load courses
-                _courses = await _courseController.GetAllCoursesAsync();
+                var modelCourses = await _courseController.GetAllCoursesAsync();
+                _courses = modelCourses.Select(c => new Course
+                {
+                    Id = c.Id,
+                    CourseCode = c.CourseCode,
+                    CourseName = c.CourseName,
+                    Description = c.Description,
+                    Credits = c.Credits,
+                    TeacherId = c.TeacherId,
+                    TeacherName = c.TeacherName,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    MaxStudents = c.MaxStudents,
+                    IsActive = c.IsActive
+                }).ToList();
+
                 cmbCourse.DisplayMember = "CourseName";
                 cmbCourse.ValueMember = "Id";
                 cmbCourse.DataSource = _courses;

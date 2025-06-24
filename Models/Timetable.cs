@@ -15,8 +15,7 @@ namespace UnicornTICManagementSystem.Models
         public DateTime EffectiveDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsActive { get; set; }
-
-        public string TimeSlot => $"{StartTime:hh\\:mm} - {EndTime:hh\\:mm}";
-        public string DayName => DayOfWeek.ToString();
+        public string TimeSlot { get; set; } = string.Empty;
+        public string DayName { get; set; } = string.Empty;
     }
 }

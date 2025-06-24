@@ -19,8 +19,9 @@ namespace UnicornTICManagementSystem.Models
 
     public enum UserRole
     {
-        Student,
-        Teacher,
-        Administrator
+        Student = 0,
+        Lecture = 1,
+        Administrator = 2,
+        Staff = 3
     }
 }

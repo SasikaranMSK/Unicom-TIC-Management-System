@@ -11,6 +11,9 @@
     <Compile Update="Views\ExamForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Views\LectureManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -33,6 +36,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Views\TimetableForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\UserEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Views\UserManagementForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>

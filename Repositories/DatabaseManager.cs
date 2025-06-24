@@ -60,8 +60,8 @@ namespace UnicornTICManagementSystem.Repositories
                     CourseName TEXT NOT NULL,
                     Description TEXT,
                     Credits INTEGER NOT NULL,
-                    TeacherId INTEGER NOT NULL,
-                    TeacherName TEXT NOT NULL,
+                    LectureId INTEGER NOT NULL,
+                    LectureName TEXT NOT NULL,
                     StartDate DATETIME NOT NULL,
                     EndDate DATETIME NOT NULL,
                     MaxStudents INTEGER NOT NULL,
@@ -115,7 +115,7 @@ namespace UnicornTICManagementSystem.Repositories
                     StartTime TEXT NOT NULL,
                     EndTime TEXT NOT NULL,
                     Classroom TEXT NOT NULL,
-                    TeacherName TEXT NOT NULL,
+                    LectureName TEXT NOT NULL,
                     EffectiveDate DATETIME NOT NULL,
                     EndDate DATETIME,
                     IsActive BOOLEAN NOT NULL DEFAULT 1,
@@ -180,7 +180,7 @@ namespace UnicornTICManagementSystem.Repositories
                     INSERT INTO Users (Username, Password, Email, FirstName, LastName, Role, CreatedDate, IsActive)
                     VALUES 
                     ('admin', 'admin123', 'admin@unicorn.edu', 'System', 'Administrator', 2, datetime('now'), 1),
-                    ('teacher1', 'teacher123', 'teacher1@unicorn.edu', 'John', 'Smith', 1, datetime('now'), 1),
+                    ('lecture1', 'lecture123', 'lecture1@unicorn.edu', 'John', 'Smith', 1, datetime('now'), 1),
                     ('student1', 'student123', 'student1@unicorn.edu', 'Alice', 'Johnson', 0, datetime('now'), 1)";
 
                     using (var command = new SQLiteCommand(insertUsers, connection))
@@ -203,7 +203,7 @@ namespace UnicornTICManagementSystem.Repositories
 
                     // Insert sample courses
                     var insertCourses = @"
-                    INSERT INTO Courses (CourseCode, CourseName, Description, Credits, TeacherId, TeacherName, StartDate, EndDate, MaxStudents, IsActive)
+                    INSERT INTO Courses (CourseCode, CourseName, Description, Credits, LectureId, LectureName, StartDate, EndDate, MaxStudents, IsActive)
                     VALUES 
                     ('CS101', 'Introduction to Computer Science', 'Basic concepts of computer science and programming', 3, 2, 'John Smith', datetime('now', '-1 month'), datetime('now', '+2 months'), 30, 1),
                     ('MATH201', 'Calculus I', 'Differential and integral calculus', 4, 2, 'John Smith', datetime('now', '-1 month'), datetime('now', '+2 months'), 25, 1),
@@ -242,7 +242,7 @@ namespace UnicornTICManagementSystem.Repositories
 
                     // Insert sample timetables
                     var insertTimetables = @"
-                    INSERT INTO Timetables (CourseId, CourseName, DayOfWeek, StartTime, EndTime, Classroom, TeacherName, EffectiveDate, IsActive)
+                    INSERT INTO Timetables (CourseId, CourseName, DayOfWeek, StartTime, EndTime, Classroom, LectureName, EffectiveDate, IsActive)
                     VALUES 
                     (1, 'Introduction to Computer Science', 1, '09:00', '10:30', 'Lab 101', 'John Smith', datetime('now', '-1 month'), 1),
                     (1, 'Introduction to Computer Science', 3, '09:00', '10:30', 'Lab 101', 'John Smith', datetime('now', '-1 month'), 1),
@@ -308,6 +308,138 @@ namespace UnicornTICManagementSystem.Repositories
                     }
                 }
                 return null;
+            });
+        }
+
+        public async Task<string> GetNextUsernameAsync(UserRole role)
+        {
+            return await Task.Run(() =>
+            {
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+                    string prefix = role == UserRole.Student ? "STU" :
+                                    role == UserRole.Lecture ? "LEC" : "ADM";
+                    var query = $"SELECT Username FROM Users WHERE Username LIKE '{prefix}%' ORDER BY Id DESC LIMIT 1";
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        var result = command.ExecuteScalar() as string;
+                        if (!string.IsNullOrEmpty(result) && result.StartsWith(prefix))
+                        {
+                            if (int.TryParse(result.Substring(3), out int lastNum))
+                                return $"{prefix}{(lastNum + 1):D3}";
+                        }
+                        return $"{prefix}001";
+                    }
+                }
+            });
+        }
+
+        public async Task<bool> AddUserAsync(User user)
+        {
+            return await Task.Run(() =>
+            {
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var query = @"
+                    INSERT INTO Users (Username, Password, Email, FirstName, LastName, Role, CreatedDate, IsActive)
+                    VALUES (@username, @password, @email, @firstName, @lastName, @role, @createdDate, @isActive)";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@username", user.Username);
+                        command.Parameters.AddWithValue("@password", user.Password);
+                        command.Parameters.AddWithValue("@email", user.Email);
+                        command.Parameters.AddWithValue("@firstName", user.FirstName);
+                        command.Parameters.AddWithValue("@lastName", user.LastName);
+                        command.Parameters.AddWithValue("@role", (int)user.Role);
+                        command.Parameters.AddWithValue("@createdDate", user.CreatedDate);
+                        command.Parameters.AddWithValue("@isActive", user.IsActive);
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            });
+        }
+
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var users = new List<User>();
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+                    var query = "SELECT * FROM Users WHERE IsActive = 1";
+                    using (var command = new SQLiteCommand(query, connection))
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            users.Add(new User
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Username = reader["Username"].ToString(),
+                                Password = reader["Password"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                FirstName = reader["FirstName"].ToString(),
+                                LastName = reader["LastName"].ToString(),
+                                Role = (UserRole)Convert.ToInt32(reader["Role"]),
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"]),
+                                IsActive = Convert.ToBoolean(reader["IsActive"])
+                            });
+                        }
+                    }
+                }
+                return users;
+            });
+        }
+
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            return await Task.Run(() =>
+            {
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var query = @"
+                    UPDATE Users SET Password=@password, Email=@email, FirstName=@firstName, LastName=@lastName, Role=@role, IsActive=@isActive
+                    WHERE Id=@id";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", user.Id);
+                        command.Parameters.AddWithValue("@password", user.Password);
+                        command.Parameters.AddWithValue("@email", user.Email);
+                        command.Parameters.AddWithValue("@firstName", user.FirstName);
+                        command.Parameters.AddWithValue("@lastName", user.LastName);
+                        command.Parameters.AddWithValue("@role", (int)user.Role);
+                        command.Parameters.AddWithValue("@isActive", user.IsActive);
+
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
+            });
+        }
+
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            return await Task.Run(() =>
+            {
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    var query = "UPDATE Users SET IsActive = 0 WHERE Id = @id";
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", id);
+                        return command.ExecuteNonQuery() > 0;
+                    }
+                }
             });
         }
 
@@ -525,8 +657,8 @@ namespace UnicornTICManagementSystem.Repositories
                                 CourseName = reader["CourseName"].ToString(),
                                 Description = reader["Description"]?.ToString() ?? "",
                                 Credits = Convert.ToInt32(reader["Credits"]),
-                                TeacherId = Convert.ToInt32(reader["TeacherId"]),
-                                TeacherName = reader["TeacherName"].ToString(),
+                                TeacherId = Convert.ToInt32(reader["LectureId"]),
+                                TeacherName = reader["LectureName"].ToString(),
                                 StartDate = Convert.ToDateTime(reader["StartDate"]),
                                 EndDate = Convert.ToDateTime(reader["EndDate"]),
                                 MaxStudents = Convert.ToInt32(reader["MaxStudents"]),
@@ -562,8 +694,8 @@ namespace UnicornTICManagementSystem.Repositories
                                 CourseName = reader["CourseName"].ToString(),
                                 Description = reader["Description"]?.ToString() ?? "",
                                 Credits = Convert.ToInt32(reader["Credits"]),
-                                TeacherId = Convert.ToInt32(reader["TeacherId"]),
-                                TeacherName = reader["TeacherName"].ToString(),
+                                TeacherId = Convert.ToInt32(reader["LectureId"]),
+                                TeacherName = reader["LectureName"].ToString(),
                                 StartDate = Convert.ToDateTime(reader["StartDate"]),
                                 EndDate = Convert.ToDateTime(reader["EndDate"]),
                                 MaxStudents = Convert.ToInt32(reader["MaxStudents"]),
@@ -604,8 +736,8 @@ namespace UnicornTICManagementSystem.Repositories
                                     CourseName = reader["CourseName"].ToString(),
                                     Description = reader["Description"]?.ToString() ?? "",
                                     Credits = Convert.ToInt32(reader["Credits"]),
-                                    TeacherId = Convert.ToInt32(reader["TeacherId"]),
-                                    TeacherName = reader["TeacherName"].ToString(),
+                                    TeacherId = Convert.ToInt32(reader["LectureId"]),
+                                    TeacherName = reader["LectureName"].ToString(),
                                     StartDate = Convert.ToDateTime(reader["StartDate"]),
                                     EndDate = Convert.ToDateTime(reader["EndDate"]),
                                     MaxStudents = Convert.ToInt32(reader["MaxStudents"]),
@@ -631,8 +763,8 @@ namespace UnicornTICManagementSystem.Repositories
                     connection.Open();
 
                     var query = @"
-                    INSERT INTO Courses (CourseCode, CourseName, Description, Credits, TeacherId, TeacherName, StartDate, EndDate, MaxStudents, IsActive)
-                    VALUES (@courseCode, @courseName, @description, @credits, @teacherId, @teacherName, @startDate, @endDate, @maxStudents, @isActive)";
+                    INSERT INTO Courses (CourseCode, CourseName, Description, Credits, LectureId, LectureName, StartDate, EndDate, MaxStudents, IsActive)
+                    VALUES (@courseCode, @courseName, @description, @credits, @lectureId, @lectureName, @startDate, @endDate, @maxStudents, @isActive)";
 
                     using (var command = new SQLiteCommand(query, connection))
                     {
@@ -640,8 +772,8 @@ namespace UnicornTICManagementSystem.Repositories
                         command.Parameters.AddWithValue("@courseName", course.CourseName);
                         command.Parameters.AddWithValue("@description", course.Description ?? "");
                         command.Parameters.AddWithValue("@credits", course.Credits);
-                        command.Parameters.AddWithValue("@teacherId", course.TeacherId);
-                        command.Parameters.AddWithValue("@teacherName", course.TeacherName);
+                        command.Parameters.AddWithValue("@lectureId", course.TeacherId);
+                        command.Parameters.AddWithValue("@lectureName", course.TeacherName);
                         command.Parameters.AddWithValue("@startDate", course.StartDate);
                         command.Parameters.AddWithValue("@endDate", course.EndDate);
                         command.Parameters.AddWithValue("@maxStudents", course.MaxStudents);
@@ -664,7 +796,7 @@ namespace UnicornTICManagementSystem.Repositories
                     var query = @"
                     UPDATE Courses 
                     SET CourseCode = @courseCode, CourseName = @courseName, Description = @description,
-                        Credits = @credits, TeacherId = @teacherId, TeacherName = @teacherName,
+                        Credits = @credits, LectureId = @lectureId, LectureName = @lectureName,
                         StartDate = @startDate, EndDate = @endDate, MaxStudents = @maxStudents, IsActive = @isActive
                     WHERE Id = @id";
 
@@ -675,8 +807,8 @@ namespace UnicornTICManagementSystem.Repositories
                         command.Parameters.AddWithValue("@courseName", course.CourseName);
                         command.Parameters.AddWithValue("@description", course.Description ?? "");
                         command.Parameters.AddWithValue("@credits", course.Credits);
-                        command.Parameters.AddWithValue("@teacherId", course.TeacherId);
-                        command.Parameters.AddWithValue("@teacherName", course.TeacherName);
+                        command.Parameters.AddWithValue("@lectureId", course.TeacherId);
+                        command.Parameters.AddWithValue("@lectureName", course.TeacherName);
                         command.Parameters.AddWithValue("@startDate", course.StartDate);
                         command.Parameters.AddWithValue("@endDate", course.EndDate);
                         command.Parameters.AddWithValue("@maxStudents", course.MaxStudents);
@@ -1061,7 +1193,7 @@ namespace UnicornTICManagementSystem.Repositories
                                 StartTime = TimeSpan.Parse(reader["StartTime"].ToString()),
                                 EndTime = TimeSpan.Parse(reader["EndTime"].ToString()),
                                 Classroom = reader["Classroom"].ToString(),
-                                TeacherName = reader["TeacherName"].ToString(),
+                                TeacherName = reader["LectureName"].ToString(),
                                 EffectiveDate = Convert.ToDateTime(reader["EffectiveDate"]),
                                 EndDate = reader["EndDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["EndDate"]),
                                 IsActive = Convert.ToBoolean(reader["IsActive"])
@@ -1099,7 +1231,7 @@ namespace UnicornTICManagementSystem.Repositories
                                     StartTime = TimeSpan.Parse(reader["StartTime"].ToString()),
                                     EndTime = TimeSpan.Parse(reader["EndTime"].ToString()),
                                     Classroom = reader["Classroom"].ToString(),
-                                    TeacherName = reader["TeacherName"].ToString(),
+                                    TeacherName = reader["LectureName"].ToString(),
                                     EffectiveDate = Convert.ToDateTime(reader["EffectiveDate"]),
                                     EndDate = reader["EndDate"] == DBNull.Value ? (DateTime?)null : Convert.ToDateTime(reader["EndDate"]),
                                     IsActive = Convert.ToBoolean(reader["IsActive"])
@@ -1121,8 +1253,8 @@ namespace UnicornTICManagementSystem.Repositories
                     connection.Open();
 
                     var query = @"
-                    INSERT INTO Timetables (CourseId, CourseName, DayOfWeek, StartTime, EndTime, Classroom, TeacherName, EffectiveDate, EndDate, IsActive)
-                    VALUES (@courseId, @courseName, @dayOfWeek, @startTime, @endTime, @classroom, @teacherName, @effectiveDate, @endDate, @isActive)";
+                    INSERT INTO Timetables (CourseId, CourseName, DayOfWeek, StartTime, EndTime, Classroom, LectureName, EffectiveDate, EndDate, IsActive)
+                    VALUES (@courseId, @courseName, @dayOfWeek, @startTime, @endTime, @classroom, @lectureName, @effectiveDate, @endDate, @isActive)";
 
                     using (var command = new SQLiteCommand(query, connection))
                     {
@@ -1132,7 +1264,7 @@ namespace UnicornTICManagementSystem.Repositories
                         command.Parameters.AddWithValue("@startTime", timetable.StartTime.ToString());
                         command.Parameters.AddWithValue("@endTime", timetable.EndTime.ToString());
                         command.Parameters.AddWithValue("@classroom", timetable.Classroom);
-                        command.Parameters.AddWithValue("@teacherName", timetable.TeacherName);
+                        command.Parameters.AddWithValue("@lectureName", timetable.TeacherName);
                         command.Parameters.AddWithValue("@effectiveDate", timetable.EffectiveDate);
                         command.Parameters.AddWithValue("@endDate", timetable.EndDate.HasValue ? (object)timetable.EndDate.Value : DBNull.Value);
                         command.Parameters.AddWithValue("@isActive", timetable.IsActive);
@@ -1238,6 +1370,50 @@ namespace UnicornTICManagementSystem.Repositories
                         return command.ExecuteNonQuery() > 0;
                     }
                 }
+            });
+        }
+
+        public async Task<bool> DeleteLectureAsync(int lectureId)
+        {
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand("DELETE FROM Lectures WHERE Id = @Id", connection))
+                {
+                    command.Parameters.AddWithValue("@Id", lectureId);
+                    var rowsAffected = await command.ExecuteNonQueryAsync();
+                    return rowsAffected > 0;
+                }
+            }
+        }
+
+        // Lecture methods
+        public async Task<List<Lecture>> GetAllLecturesAsync()
+        {
+            return await Task.Run(() =>
+            {
+                var lectures = new List<Lecture>();
+                using (var connection = new SQLiteConnection(_connectionString))
+                {
+                    connection.Open();
+                    var query = "SELECT * FROM Lectures WHERE IsActive = 1";
+                    using (var command = new SQLiteCommand(query, connection))
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lectures.Add(new Lecture
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                LectureName = reader["LectureName"].ToString(),
+                                Email = reader["Email"].ToString(),
+                                // ... other fields ...
+                                IsActive = Convert.ToBoolean(reader["IsActive"])
+                            });
+                        }
+                    }
+                }
+                return lectures;
             });
         }
     }

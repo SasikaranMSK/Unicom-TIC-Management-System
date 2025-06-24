@@ -35,3 +35,4 @@ C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\WindowsForms
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\WindowsF.5F5EF213.Up2Date
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.exe
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.pdb
+C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.exe.config

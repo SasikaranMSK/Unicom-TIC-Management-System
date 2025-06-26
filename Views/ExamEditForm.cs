@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Controllers;
-using UnicornTICManagementSystem.Models;
+using UnicomTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Models;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class ExamEditForm : Form
     {
@@ -192,7 +192,6 @@ namespace UnicornTICManagementSystem.Views
             cmbExamType.Size = new Size(controlWidth, 25);
             cmbExamType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbExamType.Items.AddRange(Enum.GetNames(typeof(ExamType)));
-            cmbExamType.SelectedIndex = 0;
             this.Controls.Add(cmbExamType);
 
             yPos += spacing;

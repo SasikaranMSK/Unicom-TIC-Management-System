@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Models;
-using UnicornTICManagementSystem.Repositories;
+using UnicomTICManagementSystem.Models;
+using UnicomTICManagementSystem.Repositories;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public class LectureManagementForm : Form
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Controllers;
-using UnicornTICManagementSystem.Models;
+using UnicomTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Models;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class StudentForm : Form
     {

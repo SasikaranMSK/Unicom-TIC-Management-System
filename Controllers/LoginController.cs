@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using UnicornTICManagementSystem.Models;
-using UnicornTICManagementSystem.Repositories;
+using UnicomTICManagementSystem.Models;
+using UnicomTICManagementSystem.Repositories;
 
-namespace UnicornTICManagementSystem.Controllers
+namespace UnicomTICManagementSystem.Controllers
 {
     public class LoginController
     {

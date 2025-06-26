@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UnicornTICManagementSystem")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c85d60a5852b0957e989c382eb33564dc9d6e7ac")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0afe3a5c6858b1e87bde364b60d8075bbe2ec786")]
 [assembly: System.Reflection.AssemblyProductAttribute("UnicornTICManagementSystem")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UnicornTICManagementSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

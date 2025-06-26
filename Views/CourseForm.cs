@@ -1,24 +1,28 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Models;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class CourseForm : Form
     {
         private readonly CourseController _courseController;
+        private readonly UserRole _role;
         private DataGridView dgvCourses;
         private Button btnAdd;
         private Button btnEdit;
         private Button btnDelete;
         private Button btnRefresh;
 
-        public CourseForm()
+        public CourseForm(UserRole role)
         {
+            _role = role;
             _courseController = new CourseController();
             InitializeComponent();
             LoadCourses();
+            ApplyRolePermissions();
         }
 
         private void InitializeComponent()
@@ -93,22 +97,108 @@ namespace UnicornTICManagementSystem.Views
             }
         }
 
-        private void BtnAdd_Click(object sender, EventArgs e)
+        private void ApplyRolePermissions()
         {
-            MessageBox.Show("Add Course functionality will be implemented here.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (_role == UserRole.Student)
+            {
+                btnAdd.Visible = false;
+                btnEdit.Visible = false;
+                btnDelete.Visible = false;
+            }
         }
 
-        private void BtnEdit_Click(object sender, EventArgs e)
+        private async void BtnAdd_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Edit Course functionality will be implemented here.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using (var dialog = new CourseEditForm())
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    var newCourse = dialog.Course;
+                    if (_courseController.ValidateCourse(newCourse))
+                    {
+                        var success = await _courseController.AddCourseAsync(newCourse);
+                        if (success)
+                        {
+                            MessageBox.Show("Course added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadCourses();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to add course.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid course data.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
         }
 
-        private void BtnDelete_Click(object sender, EventArgs e)
+        private async void BtnEdit_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Delete Course functionality will be implemented here.", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (dgvCourses.CurrentRow == null)
+            {
+                MessageBox.Show("Please select a course to edit.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var course = dgvCourses.CurrentRow.DataBoundItem as Course;
+            if (course == null) return;
+
+            using (var dialog = new CourseEditForm(course))
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    var updatedCourse = dialog.Course;
+                    if (_courseController.ValidateCourse(updatedCourse))
+                    {
+                        var success = await _courseController.UpdateCourseAsync(updatedCourse);
+                        if (success)
+                        {
+                            MessageBox.Show("Course updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            LoadCourses();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to update course.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Invalid course data.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
+        private async void BtnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvCourses.CurrentRow == null)
+            {
+                MessageBox.Show("Please select a course to delete.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var course = dgvCourses.CurrentRow.DataBoundItem as Course;
+            if (course == null) return;
+
+            var confirm = MessageBox.Show($"Are you sure you want to delete course '{course.CourseName}'?", "Confirm Delete",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirm == DialogResult.Yes)
+            {
+                var success = await _courseController.DeleteCourseAsync(course.Id);
+                if (success)
+                {
+                    MessageBox.Show("Course deleted successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadCourses();
+                }
+                else
+                {
+                    MessageBox.Show("Failed to delete course.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void BtnRefresh_Click(object sender, EventArgs e)

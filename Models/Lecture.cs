@@ -1,8 +1,13 @@
-public class Lecture
+using System;
+
+namespace UnicomTICManagementSystem.Models
 {
-    public int Id { get; set; }
-    public string LectureName { get; set; }
-    public string Email { get; set; }
-    // ... other properties ...
-    public bool IsActive { get; set; }
+    public class Lecture
+    {
+        public int Id { get; set; }
+        public string LectureName { get; set; }
+        public string Email { get; set; }
+       
+        public bool IsActive { get; set; }
+    }
 }

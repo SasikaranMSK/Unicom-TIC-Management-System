@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace UnicornTICManagementSystem.Models
+namespace UnicomTICManagementSystem.Models
 {
     public class Course
     {

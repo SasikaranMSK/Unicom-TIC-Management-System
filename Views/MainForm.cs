@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Models;
-using UnicornTICManagementSystem.Repositories;
+using UnicomTICManagementSystem.Models;
+using UnicomTICManagementSystem.Repositories;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class MainForm : Form
     {
@@ -17,6 +17,9 @@ namespace UnicornTICManagementSystem.Views
         private Button btnAdd;
         private Button btnEdit;
         private Button btnDelete;
+        private Label lblStudentCount;
+        private Label lblCourseCount;
+        private Label lblExamCount;
 
         public MainForm(User currentUser)
         {
@@ -27,7 +30,7 @@ namespace UnicornTICManagementSystem.Views
 
         private void InitializeComponent()
         {
-            this.Text = "Unicorn TIC Management System";
+            this.Text = "Unicom TIC Management System";
             this.Size = new Size(1200, 800);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.WindowState = FormWindowState.Maximized;
@@ -60,7 +63,11 @@ namespace UnicornTICManagementSystem.Views
             if (_currentUser.Role == UserRole.Administrator)
             {
                 coursesMenu.DropDownItems.Add("&Manage Courses", null, ManageCourses_Click);
-                coursesMenu.DropDownItems.Add("&Add Course", null, AddCourse_Click);
+                //coursesMenu.DropDownItems.Add("&Add Course", null, AddCourse_Click);
+            }
+            else if (_currentUser.Role == UserRole.Student)
+            {
+                coursesMenu.DropDownItems.Add("&View Courses", null, ViewCourses_Click);
             }
 
             // Exams Menu
@@ -68,7 +75,11 @@ namespace UnicornTICManagementSystem.Views
             if (_currentUser.Role == UserRole.Administrator || _currentUser.Role == UserRole.Staff)
             {
                 examsMenu.DropDownItems.Add("&Manage Exams", null, ManageExams_Click);
-                examsMenu.DropDownItems.Add("&Schedule Exam", null, ScheduleExam_Click);
+                //examsMenu.DropDownItems.Add("&Schedule Exam", null, ScheduleExam_Click);
+            }
+            else if (_currentUser.Role == UserRole.Student)
+            {
+                examsMenu.DropDownItems.Add("&View Exams", null, ViewExams_Click);
             }
 
             // Marks Menu
@@ -94,7 +105,7 @@ namespace UnicornTICManagementSystem.Views
             helpMenu.DropDownItems.Add("&About", null, About_Click);
 
             // Lectures Menu (admin only)
-            if (_currentUser.Role == UserRole.Administrator)
+            /*if (_currentUser.Role == UserRole.Administrator)
             {
                 var lecturesMenu = new ToolStripMenuItem("&Lectures");
                 lecturesMenu.DropDownItems.Add("&Manage Lectures", null, ManageLectures_Click);
@@ -106,7 +117,7 @@ namespace UnicornTICManagementSystem.Views
                 usersMenu.DropDownItems.Add("&Change Password", null, ChangePassword_Click);
                 usersMenu.DropDownItems.Add("&Change Role", null, ChangeRole_Click);
                 menuStrip.Items.Add(usersMenu);
-            }
+            }*/
 
             // Add menus to menuStrip
             menuStrip.Items.Add(fileMenu);
@@ -141,14 +152,71 @@ namespace UnicornTICManagementSystem.Views
             lblWelcome.ForeColor = Color.DarkBlue;
             lblWelcome.AutoSize = true;
             lblWelcome.Location = new Point(50, 50);
-
             mainPanel.Controls.Add(lblWelcome);
+
+            var panelStudents = CreateSummaryPanel("Students", 120, 150, 200, 100, Color.LightSkyBlue, out lblStudentCount);
+            var panelCourses = CreateSummaryPanel("Courses", 340, 150, 200, 100, Color.LightGreen, out lblCourseCount);
+            var panelExams = CreateSummaryPanel("Exams", 560, 150, 200, 100, Color.LightSalmon, out lblExamCount);
+
+            mainPanel.Controls.Add(panelStudents);
+            mainPanel.Controls.Add(panelCourses);
+            mainPanel.Controls.Add(panelExams);
+
             this.Controls.Add(mainPanel);
+
+            // Load and update counts
+            LoadDashboardCounts();
+        }
+
+        private Panel CreateSummaryPanel(string title, int x, int y, int width, int height, Color backColor, out Label lblCount)
+        {
+            var panel = new Panel
+            {
+                Location = new Point(x, y),
+                Size = new Size(width, height),
+                BackColor = backColor,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            var lblTitle = new Label
+            {
+                Text = title,
+                Font = new Font("Arial", 14, FontStyle.Bold),
+                Location = new Point(10, 10),
+                AutoSize = true
+            };
+
+            lblCount = new Label
+            {
+                Text = "0",
+                Font = new Font("Arial", 28, FontStyle.Bold),
+                Location = new Point(10, 40),
+                AutoSize = true
+            };
+
+            panel.Controls.Add(lblTitle);
+            panel.Controls.Add(lblCount);
+
+            return panel;
         }
 
         private void UpdateWelcomeMessage()
         {
             lblWelcome.Text = $"Welcome to Unicom TIC Management System, {_currentUser.FirstName}!";
+        }
+
+        private async void LoadDashboardCounts()
+        {
+            
+            var db = new DatabaseManager();
+
+            int studentCount = await db.GetStudentCountAsync();
+            int courseCount = await db.GetCourseCountAsync();
+            int examCount = await db.GetExamCountAsync();
+
+            lblStudentCount.Text = studentCount.ToString();
+            lblCourseCount.Text = courseCount.ToString();
+            lblExamCount.Text = examCount.ToString();
         }
 
         // Menu Event Handlers
@@ -185,7 +253,7 @@ namespace UnicornTICManagementSystem.Views
 
         private void ManageCourses_Click(object sender, EventArgs e)
         {
-            var courseForm = new CourseForm();
+            var courseForm = new CourseForm(_currentUser.Role);
             courseForm.ShowDialog();
         }
 
@@ -199,16 +267,28 @@ namespace UnicornTICManagementSystem.Views
             // ... actual add course logic ...
         }
 
+        private void ViewCourses_Click(object sender, EventArgs e)
+        {
+            var courseForm = new CourseForm(_currentUser.Role);
+            courseForm.ShowDialog();
+        }
+
         private void ManageExams_Click(object sender, EventArgs e)
         {
-            var examForm = new ExamForm();
+            var examForm = new ExamForm(_currentUser.Role);
             examForm.ShowDialog();
         }
 
-        private void ScheduleExam_Click(object sender, EventArgs e)
+        /*private void ScheduleExam_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Schedule Exam functionality will be implemented here.", "Info",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }*/
+
+        private void ViewExams_Click(object sender, EventArgs e)
+        {
+            var examForm = new ExamForm(_currentUser.Role);
+            examForm.ShowDialog();
         }
 
         private void EnterMarks_Click(object sender, EventArgs e)
@@ -225,19 +305,19 @@ namespace UnicornTICManagementSystem.Views
 
         private void ViewTimetable_Click(object sender, EventArgs e)
         {
-            var timetableForm = new TimetableForm();
+            var timetableForm = new TimetableForm(_currentUser.Role); // Pass the required 'role' parameter
             timetableForm.ShowDialog();
         }
 
         private void ManageSchedule_Click(object sender, EventArgs e)
         {
-            var timetableForm = new TimetableForm();
+            var timetableForm = new TimetableForm(_currentUser.Role); // Pass the required 'role' parameter
             timetableForm.ShowDialog();
         }
 
         private void About_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Unicorn TIC Management System\nVersion 1.0.0\n\nDeveloped for educational institution management.",
+            MessageBox.Show("Unicom TIC Management System\nVersion 1.0.0\n\nDeveloped for educational institution management.",
                 "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

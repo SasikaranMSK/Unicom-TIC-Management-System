@@ -1,6 +1,6 @@
 using System;
 
-namespace UnicornTICManagementSystem.Models
+namespace UnicomTICManagementSystem.Models
 {
     public class User
     {

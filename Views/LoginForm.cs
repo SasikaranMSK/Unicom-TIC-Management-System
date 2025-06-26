@@ -1,9 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Controllers;
+using UnicornTICManagementSystem.Properties;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class LoginForm : Form
     {
@@ -25,88 +26,127 @@ namespace UnicornTICManagementSystem.Views
 
         private void InitializeComponent()
         {
-            this.Text = "Unicorn TIC Management System - Login";
-            this.Size = new Size(450, 350);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.picLogo = new System.Windows.Forms.PictureBox();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.lblUsername = new System.Windows.Forms.Label();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.lblPassword = new System.Windows.Forms.Label();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.btnLogin = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // picLogo
+            // 
+            this.picLogo.BackColor = System.Drawing.Color.LightBlue;
+            this.picLogo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picLogo.Image = global::UnicornTICManagementSystem.Properties.Resources.UNICOM_TIC_LOGO_1536x580;
+            this.picLogo.Location = new System.Drawing.Point(190, 20);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(64, 64);
+            this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picLogo.TabIndex = 0;
+            this.picLogo.TabStop = false;
+            this.picLogo.WaitOnLoad = true;
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.Font = new System.Drawing.Font("Arial", 16F, System.Drawing.FontStyle.Bold);
+            this.lblTitle.ForeColor = System.Drawing.Color.DarkBlue;
+            this.lblTitle.Location = new System.Drawing.Point(25, 100);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(400, 30);
+            this.lblTitle.TabIndex = 1;
+            this.lblTitle.Text = "Unicom TIC Management System";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblUsername
+            // 
+            this.lblUsername.Font = new System.Drawing.Font("Arial", 10F);
+            this.lblUsername.Location = new System.Drawing.Point(50, 150);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(80, 20);
+            this.lblUsername.TabIndex = 2;
+            this.lblUsername.Text = "Username:";
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.Font = new System.Drawing.Font("Arial", 10F);
+            this.txtUsername.Location = new System.Drawing.Point(140, 148);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(250, 23);
+            this.txtUsername.TabIndex = 3;
+            // 
+            // lblPassword
+            // 
+            this.lblPassword.Font = new System.Drawing.Font("Arial", 10F);
+            this.lblPassword.Location = new System.Drawing.Point(50, 185);
+            this.lblPassword.Name = "lblPassword";
+            this.lblPassword.Size = new System.Drawing.Size(80, 20);
+            this.lblPassword.TabIndex = 4;
+            this.lblPassword.Text = "Password:";
+            // 
+            // txtPassword
+            // 
+            this.txtPassword.Font = new System.Drawing.Font("Arial", 10F);
+            this.txtPassword.Location = new System.Drawing.Point(140, 183);
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.Size = new System.Drawing.Size(250, 23);
+            this.txtPassword.TabIndex = 5;
+            this.txtPassword.UseSystemPasswordChar = true;
+            // 
+            // btnLogin
+            // 
+            this.btnLogin.BackColor = System.Drawing.Color.LightBlue;
+            this.btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnLogin.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
+            this.btnLogin.Location = new System.Drawing.Point(140, 230);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(100, 35);
+            this.btnLogin.TabIndex = 6;
+            this.btnLogin.Text = "Login";
+            this.btnLogin.UseVisualStyleBackColor = false;
+            // 
+            // btnExit
+            // 
+            this.btnExit.BackColor = System.Drawing.Color.LightCoral;
+            this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExit.Font = new System.Drawing.Font("Arial", 10F);
+            this.btnExit.Location = new System.Drawing.Point(250, 230);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(100, 35);
+            this.btnExit.TabIndex = 7;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = false;
+            // 
+            // LoginForm
+            // 
+            this.AcceptButton = this.btnLogin;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(248)))), ((int)(((byte)(255)))));
+            this.ClientSize = new System.Drawing.Size(434, 311);
+            this.Controls.Add(this.picLogo);
+            this.Controls.Add(this.lblTitle);
+            this.Controls.Add(this.lblUsername);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.lblPassword);
+            this.Controls.Add(this.txtPassword);
+            this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.btnExit);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.BackColor = Color.FromArgb(240, 248, 255);
+            this.Name = "LoginForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Unicom TIC Management System - Login";
 
-            // Logo
-            picLogo = new PictureBox();
-            picLogo.Size = new Size(64, 64);
-            picLogo.Location = new Point(190, 20);
-            picLogo.BackColor = Color.LightBlue;
-            picLogo.BorderStyle = BorderStyle.FixedSingle;
-            this.Controls.Add(picLogo);
+            // Wire up event handlers
+            this.btnLogin.Click += new System.EventHandler(this.BtnLogin_Click);
+            this.btnExit.Click += new System.EventHandler(this.BtnExit_Click);
 
-            // Title
-            lblTitle = new Label();
-            lblTitle.Text = "Unicorn TIC Management System";
-            lblTitle.Font = new Font("Arial", 16, FontStyle.Bold);
-            lblTitle.ForeColor = Color.DarkBlue;
-            lblTitle.Size = new Size(400, 30);
-            lblTitle.Location = new Point(25, 100);
-            lblTitle.TextAlign = ContentAlignment.MiddleCenter;
-            this.Controls.Add(lblTitle);
-
-            // Username Label
-            lblUsername = new Label();
-            lblUsername.Text = "Username:";
-            lblUsername.Location = new Point(50, 150);
-            lblUsername.Size = new Size(80, 20);
-            lblUsername.Font = new Font("Arial", 10);
-            this.Controls.Add(lblUsername);
-
-            // Username TextBox
-            txtUsername = new TextBox();
-            txtUsername.Location = new Point(140, 148);
-            txtUsername.Size = new Size(250, 25);
-            txtUsername.Font = new Font("Arial", 10);
-            this.Controls.Add(txtUsername);
-
-            // Password Label
-            lblPassword = new Label();
-            lblPassword.Text = "Password:";
-            lblPassword.Location = new Point(50, 185);
-            lblPassword.Size = new Size(80, 20);
-            lblPassword.Font = new Font("Arial", 10);
-            this.Controls.Add(lblPassword);
-
-            // Password TextBox
-            txtPassword = new TextBox();
-            txtPassword.Location = new Point(140, 183);
-            txtPassword.Size = new Size(250, 25);
-            txtPassword.Font = new Font("Arial", 10);
-            txtPassword.UseSystemPasswordChar = true;
-            this.Controls.Add(txtPassword);
-
-            // Login Button
-            btnLogin = new Button();
-            btnLogin.Text = "Login";
-            btnLogin.Location = new Point(140, 230);
-            btnLogin.Size = new Size(100, 35);
-            btnLogin.BackColor = Color.LightBlue;
-            btnLogin.FlatStyle = FlatStyle.Flat;
-            btnLogin.Font = new Font("Arial", 10, FontStyle.Bold);
-            btnLogin.Click += BtnLogin_Click;
-            this.Controls.Add(btnLogin);
-
-            // Exit Button
-            btnExit = new Button();
-            btnExit.Text = "Exit";
-            btnExit.Location = new Point(250, 230);
-            btnExit.Size = new Size(100, 35);
-            btnExit.BackColor = Color.LightCoral;
-            btnExit.FlatStyle = FlatStyle.Flat;
-            btnExit.Font = new Font("Arial", 10);
-            btnExit.Click += BtnExit_Click;
-            this.Controls.Add(btnExit);
-
-            // Set default button and focus
-            this.AcceptButton = btnLogin;
-            txtUsername.Focus();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         private async void BtnLogin_Click(object sender, EventArgs e)
@@ -159,4 +199,5 @@ namespace UnicornTICManagementSystem.Views
             Application.Exit();
         }
     }
+
 }

@@ -2,6 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="Views\CourseEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Views\CourseForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -44,5 +47,10 @@
     <Compile Update="Views\UserManagementForm.cs">
       <SubType>Form</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Views\LoginForm.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

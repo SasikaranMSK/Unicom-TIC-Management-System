@@ -1,13 +1,6 @@
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.csproj.AssemblyReference.cache
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.Views.StudentForm.resources
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.csproj.GenerateResource.cache
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.GeneratedMSBuildEditorConfig.editorconfig
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.AssemblyInfoInputs.cache
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.AssemblyInfo.cs
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.csproj.CoreCompileInputs.cache
-Z:\C#\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.sourcelink.json
-C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\UnicornTICManagementSystem.exe.config
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\UnicornTICManagementSystem.exe
+C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Data.SQLite.dll
+C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\UnicornTICManagementSystem.exe.config
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\UnicornTICManagementSystem.pdb
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\EntityFramework.SqlServer.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\EntityFramework.dll
@@ -15,7 +8,6 @@ C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\Microsoft.Da
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\SQLitePCLRaw.batteries_v2.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\SQLitePCLRaw.core.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\SQLitePCLRaw.provider.dynamic_cdecl.dll
-C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Data.SQLite.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Buffers.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Data.SQLite.EF6.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Data.SQLite.Linq.dll
@@ -24,6 +16,8 @@ C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Numer
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\bin\Debug\net4.8-windows\e_sqlite3.dll
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.csproj.AssemblyReference.cache
+C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.Properties.Resources.resources
+C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.Views.LoginForm.resources
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.Views.StudentForm.resources
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\UnicornTICManagementSystem.Views.TimetableForm.resources
 C:\Users\mps\Downloads\UnicomTIC\UnicomTIC\obj\Debug\net4.8-windows\WindowsFormsApp.csproj.GenerateResource.cache

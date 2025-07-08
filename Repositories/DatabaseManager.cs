@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Threading.Tasks;
-using UnicornTICManagementSystem.Models;
+using UnicomTICManagementSystem.Models;
 
-namespace UnicornTICManagementSystem.Repositories
+namespace UnicomTICManagementSystem.Repositories
 {
     public class DatabaseManager
     {
@@ -179,9 +179,9 @@ namespace UnicornTICManagementSystem.Repositories
                     var insertUsers = @"
                     INSERT INTO Users (Username, Password, Email, FirstName, LastName, Role, CreatedDate, IsActive)
                     VALUES 
-                    ('admin', 'admin123', 'admin@unicorn.edu', 'System', 'Administrator', 2, datetime('now'), 1),
-                    ('lecture1', 'lecture123', 'lecture1@unicorn.edu', 'John', 'Smith', 1, datetime('now'), 1),
-                    ('student1', 'student123', 'student1@unicorn.edu', 'Alice', 'Johnson', 0, datetime('now'), 1)";
+                    ('admin', 'admin123', 'admin@unicom.edu', 'System', 'Administrator', 2, datetime('now'), 1),
+                    ('lecture1', 'lecture123', 'lecture1@unicom.edu', 'John', 'Smith', 1, datetime('now'), 1),
+                    ('student1', 'student123', 'student1@unicom.edu', 'Alice', 'Johnson', 0, datetime('now'), 1)";
 
                     using (var command = new SQLiteCommand(insertUsers, connection))
                     {
@@ -192,9 +192,9 @@ namespace UnicornTICManagementSystem.Repositories
                     var insertStudents = @"
                     INSERT INTO Students (StudentNumber, FirstName, LastName, Email, DateOfBirth, Address, PhoneNumber, EnrollmentDate, IsActive)
                     VALUES 
-                    ('STU001', 'Alice', 'Johnson', 'alice.johnson@student.unicorn.edu', '2000-05-15', '123 Main St, City', '555-0101', datetime('now', '-6 months'), 1),
-                    ('STU002', 'Bob', 'Wilson', 'bob.wilson@student.unicorn.edu', '1999-08-22', '456 Oak Ave, City', '555-0102', datetime('now', '-4 months'), 1),
-                    ('STU003', 'Carol', 'Davis', 'carol.davis@student.unicorn.edu', '2001-03-10', '789 Pine St, City', '555-0103', datetime('now', '-2 months'), 1)";
+                    ('STU001', 'Alice', 'Johnson', 'alice.johnson@student.unicom.edu', '2000-05-15', '123 Main St, City', '555-0101', datetime('now', '-6 months'), 1),
+                    ('STU002', 'Bob', 'Wilson', 'bob.wilson@student.unicom.edu', '1999-08-22', '456 Oak Ave, City', '555-0102', datetime('now', '-4 months'), 1),
+                    ('STU003', 'Carol', 'Davis', 'carol.davis@student.unicom.edu', '2001-03-10', '789 Pine St, City', '555-0103', datetime('now', '-2 months'), 1)";
 
                     using (var command = new SQLiteCommand(insertStudents, connection))
                     {
@@ -214,16 +214,35 @@ namespace UnicornTICManagementSystem.Repositories
                         command.ExecuteNonQuery();
                     }
 
-                    // Insert sample exams
+                    
                     var insertExams = @"
                     INSERT INTO Exams (ExamName, CourseId, CourseName, ExamDate, Duration, Location, MaxMarks, Instructions, Type, IsActive)
                     VALUES 
-                    ('Midterm Exam', 1, 'Introduction to Computer Science', datetime('now', '+1 week'), '02:00:00', 'Room 101', 100, 'Bring calculator and ID', 0, 1),
-                    ('Final Exam', 1, 'Introduction to Computer Science', datetime('now', '+1 month'), '03:00:00', 'Room 101', 150, 'Comprehensive exam covering all topics', 1, 1),
-                    ('Quiz 1', 2, 'Calculus I', datetime('now', '+3 days'), '01:00:00', 'Room 202', 50, 'Covers chapters 1-3', 2, 1)";
+                    (@exam1, 1, @course1, @date1, @dur1, @loc1, 100, @inst1, 0, 1),
+                    (@exam2, 1, @course1, @date2, @dur2, @loc1, 150, @inst2, 1, 1),
+                    (@exam3, 2, @course2, @date3, @dur3, @loc2, 50, @inst3, 2, 1)";
 
                     using (var command = new SQLiteCommand(insertExams, connection))
                     {
+                        command.Parameters.AddWithValue("@exam1", "Midterm Exam");
+                        command.Parameters.AddWithValue("@course1", "Introduction to Computer Science");
+                        command.Parameters.AddWithValue("@date1", DateTime.Now.AddDays(7));
+                        command.Parameters.AddWithValue("@dur1", "02:00:00");
+                        command.Parameters.AddWithValue("@loc1", "Room 101");
+                        command.Parameters.AddWithValue("@inst1", "Bring calculator and ID");
+
+                        command.Parameters.AddWithValue("@exam2", "Final Exam");
+                        command.Parameters.AddWithValue("@date2", DateTime.Now.AddMonths(1));
+                        command.Parameters.AddWithValue("@dur2", "03:00:00");
+                        command.Parameters.AddWithValue("@inst2", "Comprehensive exam covering all topics");
+
+                        command.Parameters.AddWithValue("@exam3", "Quiz 1");
+                        command.Parameters.AddWithValue("@course2", "Calculus I");
+                        command.Parameters.AddWithValue("@date3", DateTime.Now.AddDays(3));
+                        command.Parameters.AddWithValue("@dur3", "01:00:00");
+                        command.Parameters.AddWithValue("@loc2", "Room 202");
+                        command.Parameters.AddWithValue("@inst3", "Covers chapters 1-3");
+
                         command.ExecuteNonQuery();
                     }
 
@@ -1416,5 +1435,47 @@ namespace UnicornTICManagementSystem.Repositories
                 return lectures;
             });
         }
+
+        
+        public async Task<int> GetStudentCountAsync()
+        {
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand("SELECT COUNT(*) FROM Students", connection))
+                {
+                    var result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+
+        public async Task<int> GetCourseCountAsync()
+        {
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand("SELECT COUNT(*) FROM Courses", connection))
+                {
+                    var result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+
+        public async Task<int> GetExamCountAsync()
+        {
+            using (var connection = new SQLiteConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                using (var command = new SQLiteCommand("SELECT COUNT(*) FROM Exams", connection))
+                {
+                    var result = await command.ExecuteScalarAsync();
+                    return Convert.ToInt32(result);
+                }
+            }
+        }
+        
+
     }
 }

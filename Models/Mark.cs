@@ -1,6 +1,6 @@
 using System;
 
-namespace UnicornTICManagementSystem.Models
+namespace UnicomTICManagementSystem.Models
 {
     public class Mark
     {
@@ -19,5 +19,7 @@ namespace UnicornTICManagementSystem.Models
 
         public decimal Percentage => MaxMarks > 0 ? (MarksObtained / MaxMarks) * 100 : 0;
         public bool IsPassed => Percentage >= 50;
+       
     }
+    
 }

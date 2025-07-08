@@ -1,9 +1,9 @@
 using System;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Repositories;
-using UnicornTICManagementSystem.Views;
+using UnicomTICManagementSystem.Repositories;
+using UnicomTICManagementSystem.Views;
 
-namespace UnicornTICManagementSystem
+namespace UnicomTICManagementSystem
 {
     internal static class Program
     {

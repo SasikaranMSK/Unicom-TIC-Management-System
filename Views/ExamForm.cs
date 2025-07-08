@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Controllers;
-using UnicornTICManagementSystem.Models;
+using UnicomTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Models;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class ExamForm : Form
     {
@@ -14,13 +14,16 @@ namespace UnicornTICManagementSystem.Views
         private Button btnEdit;
         private Button btnDelete;
         private Button btnRefresh;
+        private readonly UserRole _role;
 
-        public ExamForm()
+        public ExamForm(UserRole role)
         {
+            _role = role;
             _examController = new ExamController();
             InitializeComponent();
             LoadExams();
-
+            ApplyRolePermissions();
+            
         }
 
         private void InitializeComponent()
@@ -90,6 +93,27 @@ namespace UnicornTICManagementSystem.Views
             {
                 MessageBox.Show($"Error loading exams: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void ApplyRolePermissions()
+        {
+            if (_role == UserRole.Student)
+            {
+                btnAdd.Visible = false;
+                btnEdit.Visible = false;
+                btnDelete.Visible = false;
+            }
+            else if (_role == UserRole.Lecture || _role == UserRole.Administrator)
+            {
+                btnAdd.Visible = true;
+                btnEdit.Visible = true;
+                btnDelete.Visible = true;
+            }
+            else if (_role == UserRole.Staff)
+            {
+                btnAdd.Visible = true;
+                btnEdit.Visible = true;
+                btnDelete.Visible = false; // Staff can add/edit but not delete
             }
         }
 

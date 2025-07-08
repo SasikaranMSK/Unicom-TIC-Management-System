@@ -1,10 +1,11 @@
 using System;
+using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
-using UnicornTICManagementSystem.Controllers;
-using UnicornTICManagementSystem.Models;
+using UnicomTICManagementSystem.Controllers;
+using UnicomTICManagementSystem.Models;
 
-namespace UnicornTICManagementSystem.Views
+namespace UnicomTICManagementSystem.Views
 {
     public partial class TimetableForm : Form
     {
@@ -16,12 +17,15 @@ namespace UnicornTICManagementSystem.Views
         private Button btnDelete;
         private Button btnRefresh;
         private Label lblDay;
+        private readonly UserRole _role;
 
-        public TimetableForm()
+        public TimetableForm(UserRole role)
         {
+            _role = role;
             _timetableController = new TimetableController();
             InitializeComponent();
             LoadTimetable();
+            ApplyRolePermissions();
         }
 
         private void InitializeComponent()
@@ -115,7 +119,15 @@ namespace UnicornTICManagementSystem.Views
             // Filter timetable by selected day
             LoadTimetable();
         }
-
+        private void ApplyRolePermissions()
+        {
+            if (_role == UserRole.Student)
+            {
+                btnAdd.Visible = false;
+                btnEdit.Visible = false;
+                btnDelete.Visible = false;
+            }
+        }
         private async void BtnAdd_ClickAsync(object? sender, EventArgs e)
         {
             using (var editForm = new TimetableEditForm())
